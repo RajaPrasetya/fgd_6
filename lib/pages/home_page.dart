@@ -28,6 +28,12 @@ class _HomepageState extends State<Homepage> {
         title: const Text('Fake Store API'),
         centerTitle: true,
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/add');
+        },
+        child: const Icon(Icons.add),
+      ),
       body: product.totalItems == 0
           ? const Center(
               child: CircularProgressIndicator(),

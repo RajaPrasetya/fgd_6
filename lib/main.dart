@@ -5,6 +5,8 @@ import 'package:fgd_6/providers/products.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'pages/add_page.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -28,6 +30,7 @@ class MyApp extends StatelessWidget {
           '/': (context) => const Homepage(),
           '/detail': (context) => const DetailPage(),
           '/edit': (context) => EditPage(),
+          '/add': (context) => AddPage(),
         },
       ),
     );
