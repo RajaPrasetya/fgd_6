@@ -11,6 +11,7 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   bool isInit = true;
+
   @override
   void didChangeDependencies() {
     if (isInit) {
@@ -48,12 +49,33 @@ class _HomepageState extends State<Homepage> {
                   ),
                   title: Text(item.title),
                   subtitle: Text('\$ ${item.price}'),
-                  trailing: //delete button
-                      IconButton(
+                  trailing: IconButton(
                     onPressed: () {
-                      product.deleteProduct(item.id.toString());
+                      product.deleteProduct(item.id.toString()).then(
+                            (value) => {
+                              if (value)
+                                {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Product Deleted'),
+                                    ),
+                                  ),
+                                }
+                              else
+                                {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Failed to delete product'),
+                                    ),
+                                  ),
+                                }
+                            },
+                          );
                     },
-                    icon: const Icon(Icons.delete, color: Colors.red),
+                    icon: const Icon(
+                      Icons.delete,
+                      color: Colors.red,
+                    ),
                   ),
                   onTap: () {
                     Navigator.pushNamed(context, '/detail', arguments: item.id);

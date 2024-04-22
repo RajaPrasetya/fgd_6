@@ -76,7 +76,7 @@ class ProductProvider with ChangeNotifier {
   }
 
   //TODO: Edit Product
-  Future<void> editProduct(String id, String title, int price) async {
+  Future<bool> editProduct(String id, String title, int price) async {
     var url = 'https://api.escuelajs.co/api/v1/products/$id';
 
     final productData = {
@@ -94,13 +94,15 @@ class ProductProvider with ChangeNotifier {
       print('Product edited successfully');
       //update the product list after editing
       connectAPI();
+      return true;
     } else {
       print('Failed to edit product. Error: ${response.statusCode}');
+      return false;
     }
   }
 
   //TODO: Delete Product
-  Future<void> deleteProduct(String id) async {
+  Future<bool> deleteProduct(String id) async {
     var url = 'https://api.escuelajs.co/api/v1/products/$id';
 
     final response = await http.delete(Uri.parse(url));
@@ -109,8 +111,10 @@ class ProductProvider with ChangeNotifier {
       print('Product deleted successfully');
       //update the product list after deleting
       connectAPI();
+      return true;
     } else {
       print('Failed to delete product. Error: ${response.statusCode}');
+      return false;
     }
   }
 }

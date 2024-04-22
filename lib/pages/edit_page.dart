@@ -67,10 +67,30 @@ class _EditPageState extends State<EditPage> {
                 String editedTitle = _titleController.text;
                 int editedPrice = int.parse(_priceController.text);
                 // Perform any necessary operations with the edited data
-                product.editProduct(
-                    productData['id'].toString(), editedTitle, editedPrice);
+                product
+                    .editProduct(
+                        productData['id'].toString(), editedTitle, editedPrice)
+                    .then(
+                      (value) => {
+                        if (value)
+                          {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Product Edited'),
+                              ),
+                            ),
+                          }
+                        else
+                          {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Failed to edit product'),
+                              ),
+                            ),
+                          }
+                      },
+                    );
                 // Navigate back to the previous page
-                Navigator.pop(context);
               },
               child: Text('Save'),
             ),
