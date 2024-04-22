@@ -46,7 +46,7 @@ class ProductProvider with ChangeNotifier {
 
     final response = await http.put(
       Uri.parse(url),
-      headers: {'Content-Type': 'application/json'}, // Add this line
+      headers: {'Content-Type': 'application/json'},
       body: json.encode(productData),
     );
 
@@ -56,6 +56,20 @@ class ProductProvider with ChangeNotifier {
       connectAPI();
     } else {
       print('Failed to edit product. Error: ${response.statusCode}');
+    }
+  }
+
+  Future<void> deleteProduct(String id) async {
+    var url = 'https://api.escuelajs.co/api/v1/products/$id';
+
+    final response = await http.delete(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      print('Product deleted successfully');
+      //update the product list after deleting
+      connectAPI();
+    } else {
+      print('Failed to delete product. Error: ${response.statusCode}');
     }
   }
 }

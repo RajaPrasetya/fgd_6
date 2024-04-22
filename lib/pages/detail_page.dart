@@ -32,14 +32,28 @@ class _DetailPageState extends State<DetailPage> {
   Widget build(BuildContext context) {
     final productID = ModalRoute.of(context)!.settings.arguments as int;
     final product = Provider.of<ProductProvider>(context, listen: false);
-    final productData = product.searchItem(productID);
+    var productData = product.searchItem(productID);
 
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("Detail"),
-          centerTitle: true,
+      appBar: AppBar(title: const Text("Detail"), centerTitle: true, actions: [
+        IconButton(
+          onPressed: () {
+            Navigator.pushNamed(context, '/edit', arguments: {
+              'id': productData[0].id,
+              'title': productData[0].title,
+              'price': productData[0].price,
+            });
+          },
+          icon: const Icon(Icons.edit),
         ),
-        body: Padding(
+      ]),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          setState(() {
+            productData = product.searchItem(productID);
+          });
+        },
+        child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: ListView(
             children: [
@@ -96,24 +110,24 @@ class _DetailPageState extends State<DetailPage> {
             ],
           ),
         ),
-        bottomNavigationBar: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              backgroundColor: Colors.deepPurple,
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
             ),
-            onPressed: () {},
-            child: Text(
-              'Add to Cart',
-              style: GoogleFonts.josefinSans(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  color: Colors.white),
-            ),
+            backgroundColor: Colors.deepPurple,
           ),
-        ));
+          onPressed: () {},
+          child: Text(
+            'Add to Cart',
+            style: GoogleFonts.josefinSans(
+                fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
+          ),
+        ),
+      ),
+    );
   }
 }

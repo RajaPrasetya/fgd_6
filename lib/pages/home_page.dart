@@ -42,15 +42,12 @@ class _HomepageState extends State<Homepage> {
                   ),
                   title: Text(item.title),
                   subtitle: Text('\$ ${item.price}'),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.edit),
+                  trailing: //delete button
+                      IconButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/edit', arguments: {
-                        'id': item.id,
-                        'title': item.title,
-                        'price': item.price,
-                      });
+                      product.deleteProduct(item.id.toString());
                     },
+                    icon: const Icon(Icons.delete, color: Colors.red),
                   ),
                   onTap: () {
                     Navigator.pushNamed(context, '/detail', arguments: item.id);
