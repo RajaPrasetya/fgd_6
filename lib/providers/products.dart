@@ -28,11 +28,34 @@ class ProductProvider with ChangeNotifier {
               title: element['title'],
               description: element['description'],
               price: element['price'],
-              image: element['images'][0], // Add the 'image' argument
+              image: element['images'][0],
             ))
         .toList();
 
     print('Data berhasil ditambahkan');
     notifyListeners();
+  }
+
+  Future<void> editProduct(String id, String title, int price) async {
+    var url = 'https://api.escuelajs.co/api/v1/products/$id';
+
+    final productData = {
+      'title': title,
+      'price': price,
+    };
+
+    final response = await http.put(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json'}, // Add this line
+      body: json.encode(productData),
+    );
+
+    if (response.statusCode == 200) {
+      print('Product edited successfully');
+      //update the product list after editing
+      connectAPI();
+    } else {
+      print('Failed to edit product. Error: ${response.statusCode}');
+    }
   }
 }

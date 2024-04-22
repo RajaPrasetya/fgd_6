@@ -42,7 +42,16 @@ class _HomepageState extends State<Homepage> {
                   ),
                   title: Text(item.title),
                   subtitle: Text('\$ ${item.price}'),
-                  trailing: const Icon(Icons.arrow_forward_ios),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/edit', arguments: {
+                        'id': item.id,
+                        'title': item.title,
+                        'price': item.price,
+                      });
+                    },
+                  ),
                   onTap: () {
                     Navigator.pushNamed(context, '/detail', arguments: item.id);
                   },

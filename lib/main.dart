@@ -1,4 +1,5 @@
 import 'package:fgd_6/pages/detail_page.dart';
+import 'package:fgd_6/pages/edit_page.dart';
 import 'package:fgd_6/pages/home_page.dart';
 import 'package:fgd_6/providers/products.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,8 @@ class MyApp extends StatelessWidget {
         initialRoute: '/',
         routes: {
           '/': (context) => const Homepage(),
-          '/detail': (context) => DetailPage(),
+          '/detail': (context) => const DetailPage(),
+          '/edit': (context) => EditPage(),
         },
       ),
     );
