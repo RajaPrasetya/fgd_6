@@ -41,7 +41,7 @@ class ProductProvider with ChangeNotifier {
     if (response.statusCode == 201) {
       print('Product added successfully');
       //update the product list after adding
-      connectAPI();
+      getProduct();
       //print the response body
       print(jsonDecode(response.body));
       //return true if the product is added successfully
@@ -54,10 +54,10 @@ class ProductProvider with ChangeNotifier {
     }
   }
 
-  //TODO: GET Product
-  Future<void> connectAPI() async {
+  //TODO: GET Product Paginated
+  Future<void> getProduct() async {
     Uri url =
-        Uri.parse('https://api.escuelajs.co/api/v1/products?offset=0&limit=10');
+        Uri.parse('https://api.escuelajs.co/api/v1/products?offset=0&limit=5');
 
     var response = await http.get(url);
     var data = jsonDecode(response.body) as List<dynamic>;
@@ -84,30 +84,48 @@ class ProductProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  //TODO: Get Product by ID with api
-  Future<Product> getProductById(String id) async {
+  //TODO: Get Product by ID
+  Future<bool> getProductById(int id) async {
     var url = 'https://api.escuelajs.co/api/v1/products/$id';
 
-    final response = await http.get(Uri.parse(url));
-
-    if (response.statusCode == 200) {
-      var data = jsonDecode(response.body);
-      return Product(
-        id: data['id'],
-        title: data['title'],
-        description: data['description'],
-        price: data['price'],
-        image: data['images'][0],
-      );
+    if (_items.any((element) => element.id == id)) {
+      print('Product already exists');
+      _items = [
+        _items.firstWhere((element) => element.id == id),
+      ];
+      notifyListeners();
+      return true;
     } else {
-      print('Failed to get product. Error: ${response.statusCode}');
-      return Product(
-        id: 0,
-        title: '',
-        description: '',
-        price: 0,
-        image: '',
-      );
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body) as Map<String, dynamic>;
+
+        // Decode the first image URL string back into a list of URLs
+        List<dynamic> imageUrls = jsonDecode(data['images'][0]);
+
+        // Use the first URL from the decoded list
+        String imageUrl = imageUrls[0];
+
+        _items.add(Product(
+          id: data['id'],
+          title: data['title'],
+          description: data['description'],
+          price: data['price'],
+          image: imageUrl,
+        ));
+        _items = [
+          _items.firstWhere((element) => element.id == data['id']),
+        ];
+
+        print('Product added successfully');
+        print('local item after: $_items');
+        notifyListeners();
+        return true;
+      } else {
+        print('Failed to get product. Error: ${response.statusCode}');
+        return false;
+      }
     }
   }
 
@@ -129,7 +147,7 @@ class ProductProvider with ChangeNotifier {
     if (response.statusCode == 200) {
       print('Product edited successfully');
       //update the product list after editing
-      connectAPI();
+      getProduct();
       return true;
     } else {
       print('Failed to edit product. Error: ${response.statusCode}');
@@ -146,7 +164,7 @@ class ProductProvider with ChangeNotifier {
     if (response.statusCode == 200) {
       print('Product deleted successfully');
       //update the product list after deleting
-      connectAPI();
+      getProduct();
       return true;
     } else {
       print('Failed to delete product. Error: ${response.statusCode}');

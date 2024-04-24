@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Homepage extends StatefulWidget {
-  const Homepage({super.key});
+  const Homepage({Key? key}) : super(key: key);
 
   @override
   State<Homepage> createState() => _HomepageState();
@@ -11,14 +11,16 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   bool isInit = true;
+  late ProductProvider productProvider;
 
   @override
   void didChangeDependencies() {
+    super.didChangeDependencies();
     if (isInit) {
-      Provider.of<ProductProvider>(context).connectAPI();
+      productProvider = Provider.of<ProductProvider>(context);
+      productProvider.getProduct();
     }
     isInit = false;
-    super.didChangeDependencies();
   }
 
   @override
@@ -30,8 +32,61 @@ class _HomepageState extends State<Homepage> {
         centerTitle: true,
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  int id = 0;
+                  return AlertDialog(
+                    title: const Text('Search Product by ID'),
+                    content: TextField(
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        id = int.parse(value);
+                      },
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          product.getProductById(id).then((value) {
+                            if (value) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Product Found'),
+                                ),
+                              );
+                              Navigator.pop(context);
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Product Not Found'),
+                                ),
+                              );
+                              Navigator.pop(context);
+                            }
+                          });
+                        },
+                        child: const Text('Search'),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
             icon: const Icon(Icons.search),
+          ),
+          //refresh button
+          IconButton(
+            onPressed: () {
+              product.getProduct();
+            },
+            icon: const Icon(Icons.refresh),
           ),
         ],
       ),
