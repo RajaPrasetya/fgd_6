@@ -34,9 +34,11 @@ class _EditPageState extends State<EditPage> {
   @override
   Widget build(BuildContext context) {
     final productData = ModalRoute.of(context)!.settings.arguments as Map;
+    final product = Provider.of<ProductProvider>(context, listen: false);
+
     _titleController.text = productData['title'];
     _priceController.text = productData['price'].toString();
-    final product = Provider.of<ProductProvider>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Page'),
@@ -66,31 +68,28 @@ class _EditPageState extends State<EditPage> {
                 // Save the edited title and price
                 String editedTitle = _titleController.text;
                 int editedPrice = int.parse(_priceController.text);
+
                 // Perform any necessary operations with the edited data
                 product
                     .editProduct(
                         productData['id'].toString(), editedTitle, editedPrice)
                     .then(
-                      (value) => {
-                        if (value)
-                          {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Product Edited'),
-                              ),
-                            ),
-                          }
-                        else
-                          {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Failed to edit product'),
-                              ),
-                            ),
-                          }
-                      },
-                    );
-                // Navigate back to the previous page
+                  (value) {
+                    if (value) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Product Edited'),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Failed to edit product'),
+                        ),
+                      );
+                    }
+                  },
+                );
               },
               child: Text('Save'),
             ),

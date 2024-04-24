@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import '../providers/products.dart';
 
 class DetailPage extends StatefulWidget {
-  const DetailPage({super.key});
+  const DetailPage({Key? key}) : super(key: key);
 
   @override
   State<DetailPage> createState() => _DetailPageState();
@@ -35,18 +35,22 @@ class _DetailPageState extends State<DetailPage> {
     var productData = product.searchItem(productID);
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Detail"), centerTitle: true, actions: [
-        IconButton(
-          onPressed: () {
-            Navigator.pushNamed(context, '/edit', arguments: {
-              'id': productData[0].id,
-              'title': productData[0].title,
-              'price': productData[0].price,
-            });
-          },
-          icon: const Icon(Icons.edit),
-        ),
-      ]),
+      appBar: AppBar(
+        title: const Text("Detail"),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/edit', arguments: {
+                'id': productData[0].id,
+                'title': productData[0].title,
+                'price': productData[0].price,
+              });
+            },
+            icon: const Icon(Icons.edit),
+          ),
+        ],
+      ),
       body: RefreshIndicator(
         onRefresh: () async {
           setState(() {
@@ -62,13 +66,17 @@ class _DetailPageState extends State<DetailPage> {
               Text(
                 productData[0].title,
                 style: GoogleFonts.josefinSans(
-                    fontWeight: FontWeight.bold, fontSize: 24),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                ),
               ),
               const SizedBox(height: 16),
               Text(
                 productData[0].description,
                 style: GoogleFonts.josefinSans(
-                    fontWeight: FontWeight.w300, fontSize: 16),
+                  fontWeight: FontWeight.w300,
+                  fontSize: 16,
+                ),
               ),
               const SizedBox(height: 16),
               Row(
@@ -83,7 +91,9 @@ class _DetailPageState extends State<DetailPage> {
                       Text(
                         '\$ ${productData[0].price}',
                         style: GoogleFonts.josefinSans(
-                            fontWeight: FontWeight.bold, fontSize: 24),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                        ),
                       ),
                     ],
                   ),
@@ -91,16 +101,12 @@ class _DetailPageState extends State<DetailPage> {
                   Row(
                     children: [
                       IconButton(
-                        onPressed: () {
-                          decrement();
-                        },
+                        onPressed: decrement,
                         icon: const Icon(Icons.remove),
                       ),
                       Text('$count'),
                       IconButton(
-                        onPressed: () {
-                          increment();
-                        },
+                        onPressed: increment,
                         icon: const Icon(Icons.add),
                       ),
                     ],
@@ -124,7 +130,10 @@ class _DetailPageState extends State<DetailPage> {
           child: Text(
             'Add to Cart',
             style: GoogleFonts.josefinSans(
-                fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: Colors.white,
+            ),
           ),
         ),
       ),

@@ -19,6 +19,7 @@ class _AddPageState extends State<AddPage> {
   Widget build(BuildContext context) {
     final productProvider =
         Provider.of<ProductProvider>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Add Page'),
@@ -30,62 +31,35 @@ class _AddPageState extends State<AddPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'Title',
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    title = value;
-                  });
-                },
-              ),
+              _buildTextField('Title', (value) {
+                setState(() {
+                  title = value;
+                });
+              }, keyboardType: TextInputType.text),
               SizedBox(height: 16.0),
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'Price',
-                ),
-                keyboardType: TextInputType.number,
-                onChanged: (value) {
-                  setState(() {
-                    price = int.parse(value);
-                  });
-                },
-              ),
+              _buildTextField('Price', (value) {
+                setState(() {
+                  price = int.parse(value);
+                });
+              }, keyboardType: TextInputType.number),
               SizedBox(height: 16.0),
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'Description',
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    description = value;
-                  });
-                },
-              ),
+              _buildTextField('Description', (value) {
+                setState(() {
+                  description = value;
+                });
+              }, keyboardType: TextInputType.text),
               SizedBox(height: 16.0),
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'Category ID',
-                ),
-                keyboardType: TextInputType.number,
-                onChanged: (value) {
-                  setState(() {
-                    categoryId = int.parse(value);
-                  });
-                },
-              ),
+              _buildTextField('Category ID', (value) {
+                setState(() {
+                  categoryId = int.parse(value);
+                });
+              }, keyboardType: TextInputType.number),
               SizedBox(height: 16.0),
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'Images',
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    images = value;
-                  });
-                },
-              ),
+              _buildTextField('Images', (value) {
+                setState(() {
+                  images = value;
+                });
+              }, keyboardType: TextInputType.text),
               SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () {
@@ -97,24 +71,22 @@ class _AddPageState extends State<AddPage> {
                     categoryId,
                     images,
                   )
-                      .then(
-                    (value) {
-                      if (value) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Product added successfully'),
-                          ),
-                        );
-                        Navigator.of(context).pop();
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Failed to add product'),
-                          ),
-                        );
-                      }
-                    },
-                  );
+                      .then((value) {
+                    if (value) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Product added successfully'),
+                        ),
+                      );
+                      Navigator.of(context).pop();
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Failed to add product'),
+                        ),
+                      );
+                    }
+                  });
                 },
                 child: Text('Save'),
               ),
@@ -122,6 +94,17 @@ class _AddPageState extends State<AddPage> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField(String labelText, Function(String) onChanged,
+      {required TextInputType keyboardType}) {
+    return TextField(
+      decoration: InputDecoration(
+        labelText: labelText,
+      ),
+      keyboardType: keyboardType,
+      onChanged: onChanged,
     );
   }
 }

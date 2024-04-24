@@ -32,68 +32,17 @@ class _HomepageState extends State<Homepage> {
         centerTitle: true,
         actions: [
           IconButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  int id = 0;
-                  return AlertDialog(
-                    title: const Text('Search Product by ID'),
-                    content: TextField(
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        id = int.parse(value);
-                      },
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Cancel'),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          product.getProductById(id).then((value) {
-                            if (value) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Product Found'),
-                                ),
-                              );
-                              Navigator.pop(context);
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Product Not Found'),
-                                ),
-                              );
-                              Navigator.pop(context);
-                            }
-                          });
-                        },
-                        child: const Text('Search'),
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
+            onPressed: () => _showSearchDialog(context),
             icon: const Icon(Icons.search),
           ),
-          //refresh button
           IconButton(
-            onPressed: () {
-              product.getProduct();
-            },
+            onPressed: () => product.getProduct(),
             icon: const Icon(Icons.refresh),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/add');
-        },
+        onPressed: () => Navigator.pushNamed(context, '/add'),
         child: const Icon(Icons.add),
       ),
       body: product.totalItems == 0
@@ -111,39 +60,88 @@ class _HomepageState extends State<Homepage> {
                   title: Text(item.title),
                   subtitle: Text('\$ ${item.price}'),
                   trailing: IconButton(
-                    onPressed: () {
-                      product.deleteProduct(item.id.toString()).then(
-                            (value) => {
-                              if (value)
-                                {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Product Deleted'),
-                                    ),
-                                  ),
-                                }
-                              else
-                                {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Failed to delete product'),
-                                    ),
-                                  ),
-                                }
-                            },
-                          );
-                    },
+                    onPressed: () =>
+                        _deleteProduct(context, item.id.toString()),
                     icon: const Icon(
                       Icons.delete,
                       color: Colors.red,
                     ),
                   ),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/detail', arguments: item.id);
-                  },
+                  onTap: () => _navigateToDetail(context, item.id),
                 );
               },
             ),
     );
+  }
+
+  void _showSearchDialog(BuildContext context) {
+    int id = 0;
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Search Product by ID'),
+          content: TextField(
+            keyboardType: TextInputType.number,
+            onChanged: (value) {
+              id = int.parse(value);
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => _searchProductById(context, id),
+              child: const Text('Search'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _searchProductById(BuildContext context, int id) {
+    final product = Provider.of<ProductProvider>(context, listen: false);
+    product.getProductById(id).then((value) {
+      if (value) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Product Found'),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Product Not Found'),
+          ),
+        );
+      }
+      Navigator.pop(context);
+    });
+  }
+
+  void _deleteProduct(BuildContext context, String productId) {
+    final product = Provider.of<ProductProvider>(context, listen: false);
+    product.deleteProduct(productId).then((value) {
+      if (value) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Product Deleted'),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to delete product'),
+          ),
+        );
+      }
+    });
+  }
+
+  void _navigateToDetail(BuildContext context, int productId) {
+    Navigator.pushNamed(context, '/detail', arguments: productId);
   }
 }
