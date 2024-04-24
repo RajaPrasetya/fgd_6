@@ -47,6 +47,7 @@ class ProductProvider with ChangeNotifier {
       //return true if the product is added successfully
       return true;
     } else {
+      print(jsonDecode(response.body));
       print('Failed to add product. Error: ${response.statusCode}');
       //return false if the product is not added successfully
       return false;
@@ -61,18 +62,53 @@ class ProductProvider with ChangeNotifier {
     var response = await http.get(url);
     var data = jsonDecode(response.body) as List<dynamic>;
 
-    _items = data
-        .map((element) => Product(
-              id: element['id'],
-              title: element['title'],
-              description: element['description'],
-              price: element['price'],
-              image: element['images'][0],
-            ))
-        .toList();
+    _items = data.map((element) {
+      // Decode the first image URL string back into a list of URLs
+      List<dynamic> imageUrls = jsonDecode(element['images'][0]);
+
+      // Use the first URL from the decoded list
+      String imageUrl = imageUrls[0];
+
+      return Product(
+        id: element['id'],
+        title: element['title'],
+        description: element['description'],
+        price: element['price'],
+        image: imageUrl,
+      );
+    }).toList();
 
     print('Data berhasil ditambahkan');
+    print('local item : $_items');
+    print('data : ${_items[0].image}');
     notifyListeners();
+  }
+
+  //TODO: Get Product by ID with api
+  Future<Product> getProductById(String id) async {
+    var url = 'https://api.escuelajs.co/api/v1/products/$id';
+
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      return Product(
+        id: data['id'],
+        title: data['title'],
+        description: data['description'],
+        price: data['price'],
+        image: data['images'][0],
+      );
+    } else {
+      print('Failed to get product. Error: ${response.statusCode}');
+      return Product(
+        id: 0,
+        title: '',
+        description: '',
+        price: 0,
+        image: '',
+      );
+    }
   }
 
   //TODO: Edit Product

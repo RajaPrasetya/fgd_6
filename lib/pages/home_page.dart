@@ -28,6 +28,12 @@ class _HomepageState extends State<Homepage> {
       appBar: AppBar(
         title: const Text('Fake Store API'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.search),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
