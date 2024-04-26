@@ -141,7 +141,7 @@ class ProductProvider with ChangeNotifier {
 
     if (response.statusCode == 200) {
       print('Product edited successfully');
-      getProduct();
+      await getProduct();
       return true;
     } else {
       print('Failed to edit product. Error: ${response.statusCode}');
@@ -156,7 +156,7 @@ class ProductProvider with ChangeNotifier {
 
     if (response.statusCode == 200) {
       print('Product deleted successfully');
-      getProduct();
+      await getProduct();
       return true;
     } else {
       print('Failed to delete product. Error: ${response.statusCode}');

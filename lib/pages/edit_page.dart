@@ -68,7 +68,6 @@ class _EditPageState extends State<EditPage> {
                 // Save the edited title and price
                 String editedTitle = _titleController.text;
                 int editedPrice = int.parse(_priceController.text);
-
                 // Perform any necessary operations with the edited data
                 product
                     .editProduct(
@@ -76,6 +75,7 @@ class _EditPageState extends State<EditPage> {
                     .then(
                   (value) {
                     if (value) {
+                      Navigator.pop(context);
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Product Edited'),
