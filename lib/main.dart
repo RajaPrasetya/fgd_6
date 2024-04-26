@@ -1,6 +1,7 @@
 import 'package:fgd_6/pages/detail_page.dart';
 import 'package:fgd_6/pages/edit_page.dart';
 import 'package:fgd_6/pages/home_page.dart';
+import 'package:fgd_6/providers/categories.dart';
 import 'package:fgd_6/providers/products.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,8 +18,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => ProductProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ProductProvider()),
+        ChangeNotifierProvider(create: (context) => CategoriesProvider()),
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(

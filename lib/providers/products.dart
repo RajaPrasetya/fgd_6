@@ -83,6 +83,8 @@ class ProductProvider with ChangeNotifier {
     print('data : ${_items[0].image}');
   }
 
+  //get categories
+
   Future<bool> getProductById(int id) async {
     var url = 'https://api.escuelajs.co/api/v1/products/$id';
 

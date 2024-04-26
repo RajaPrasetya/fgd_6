@@ -2,6 +2,8 @@ import 'package:fgd_6/providers/products.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/categories.dart';
+
 class Homepage extends StatefulWidget {
   const Homepage({Key? key}) : super(key: key);
 
@@ -12,13 +14,16 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   bool isInit = true;
   late ProductProvider productProvider;
+  late CategoriesProvider categoriesProvider;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (isInit) {
       productProvider = Provider.of<ProductProvider>(context);
+      categoriesProvider = Provider.of<CategoriesProvider>(context);
       productProvider.getProduct();
+      categoriesProvider.getCategories();
     }
     isInit = false;
   }

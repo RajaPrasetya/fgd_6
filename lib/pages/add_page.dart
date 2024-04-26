@@ -1,3 +1,4 @@
+import 'package:fgd_6/providers/categories.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,6 +20,8 @@ class _AddPageState extends State<AddPage> {
   Widget build(BuildContext context) {
     final productProvider =
         Provider.of<ProductProvider>(context, listen: false);
+    final categoriesProvider =
+        Provider.of<CategoriesProvider>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -49,11 +52,24 @@ class _AddPageState extends State<AddPage> {
                 });
               }, keyboardType: TextInputType.text),
               SizedBox(height: 16.0),
-              _buildTextField('Category ID', (value) {
-                setState(() {
-                  categoryId = int.parse(value);
-                });
-              }, keyboardType: TextInputType.number),
+              DropdownMenu(
+                width: MediaQuery.of(context).size.width - 32,
+                label: const Text("Category"),
+                hintText: 'Select Category...',
+                onSelected: (value) {
+                  setState(() {
+                    categoryId = value as int;
+                  });
+                  print(categoryId);
+                },
+                dropdownMenuEntries: List<DropdownMenuEntry<int>>.generate(
+                  categoriesProvider.totalItems,
+                  (index) => DropdownMenuEntry(
+                    value: categoriesProvider.items[index].id,
+                    label: categoriesProvider.items[index].name,
+                  ),
+                ),
+              ),
               SizedBox(height: 16.0),
               _buildTextField('Images', (value) {
                 setState(() {
@@ -101,8 +117,8 @@ class _AddPageState extends State<AddPage> {
       {required TextInputType keyboardType}) {
     return TextField(
       decoration: InputDecoration(
-        labelText: labelText,
-      ),
+          labelText: labelText,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0))),
       keyboardType: keyboardType,
       onChanged: onChanged,
     );
