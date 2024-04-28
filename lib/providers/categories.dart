@@ -16,14 +16,14 @@ class CategoriesProvider with ChangeNotifier {
   int get totalItems => _items.length;
 
   Future<void> getCategories() async {
-    Uri url = Uri.parse('https://api.escuelajs.co/api/v1/categories');
+    Uri url = Uri.parse('http://10.0.2.2:8000/api/v1/categories');
     var response = await http.get(url);
     var data = jsonDecode(response.body) as List<dynamic>;
 
     _items = data.map((element) {
       return Category(
-        id: element['id'],
-        name: element['name'],
+        id: element['category_id'],
+        name: element['title'],
         image: element['image'],
       );
     }).toList();

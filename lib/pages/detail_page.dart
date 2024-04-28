@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 import '../providers/products.dart';
 
@@ -30,6 +31,7 @@ class _DetailPageState extends State<DetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    var formatter = NumberFormat.decimalPattern('id');
     final productID = ModalRoute.of(context)!.settings.arguments as int;
     final product = Provider.of<ProductProvider>(context, listen: false);
     var productData = product.searchItem(productID);
@@ -89,7 +91,7 @@ class _DetailPageState extends State<DetailPage> {
                         style: TextStyle(fontSize: 16),
                       ),
                       Text(
-                        '\$ ${productData[0].price}',
+                        'Rp. ${formatter.format(productData[0].price)}',
                         style: GoogleFonts.josefinSans(
                           fontWeight: FontWeight.bold,
                           fontSize: 24,

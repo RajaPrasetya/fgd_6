@@ -1,5 +1,6 @@
 import 'package:fgd_6/providers/products.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/categories.dart';
@@ -30,6 +31,7 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
+    var formatter = NumberFormat.decimalPattern('id');
     final product = Provider.of<ProductProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
@@ -63,7 +65,7 @@ class _HomepageState extends State<Homepage> {
                     backgroundImage: NetworkImage(item.image),
                   ),
                   title: Text(item.title),
-                  subtitle: Text('\$ ${item.price}'),
+                  subtitle: Text('Rp. ${formatter.format(item.price)}'),
                   trailing: IconButton(
                     onPressed: () =>
                         _deleteProduct(context, item.id.toString()),

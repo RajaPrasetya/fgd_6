@@ -17,14 +17,14 @@ class ProductProvider with ChangeNotifier {
 
   Future<bool> addProduct(String title, int price, String description,
       int categoryId, String image) async {
-    var url = 'https://api.escuelajs.co/api/v1/products';
+    var url = 'http://10.0.2.2:8000/api/v1/products';
 
     final productData = {
       'title': title,
       'price': price,
       'description': description,
-      'categoryId': categoryId,
-      'images': [image],
+      'category_id': categoryId,
+      'image': image,
     };
 
     final response = await http.post(
@@ -35,15 +35,13 @@ class ProductProvider with ChangeNotifier {
 
     if (response.statusCode == 201) {
       var data = jsonDecode(response.body) as Map<String, dynamic>;
-      List<dynamic> imageUrls = jsonDecode(data['images'][0]);
-      String imageUrl = imageUrls[0];
 
       _items.add(Product(
         id: data['id'],
         title: data['title'],
         description: data['description'],
         price: data['price'],
-        image: imageUrl,
+        image: data['image'],
       ));
 
       notifyListeners();
@@ -58,22 +56,18 @@ class ProductProvider with ChangeNotifier {
   }
 
   Future<void> getProduct() async {
-    Uri url =
-        Uri.parse('https://api.escuelajs.co/api/v1/products?offset=0&limit=5');
+    Uri url = Uri.parse('http://10.0.2.2:8000/api/v1/products');
 
     var response = await http.get(url);
     var data = jsonDecode(response.body) as List<dynamic>;
 
     _items = data.map((element) {
-      List<dynamic> imageUrls = jsonDecode(element['images'][0]);
-      String imageUrl = imageUrls[0];
-
       return Product(
         id: element['id'],
         title: element['title'],
         description: element['description'],
         price: element['price'],
-        image: imageUrl,
+        image: element['image'],
       );
     }).toList();
 
@@ -86,7 +80,7 @@ class ProductProvider with ChangeNotifier {
   //get categories
 
   Future<bool> getProductById(int id) async {
-    var url = 'https://api.escuelajs.co/api/v1/products/$id';
+    var url = 'http://10.0.2.2:8000/api/v1/products/$id';
 
     if (_items.any((element) => element.id == id)) {
       print('Product already exists');
@@ -100,15 +94,13 @@ class ProductProvider with ChangeNotifier {
 
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body) as Map<String, dynamic>;
-        List<dynamic> imageUrls = jsonDecode(data['images'][0]);
-        String imageUrl = imageUrls[0];
 
         _items.add(Product(
           id: data['id'],
           title: data['title'],
           description: data['description'],
           price: data['price'],
-          image: imageUrl,
+          image: data['image'],
         ));
         _items = [
           _items.firstWhere((element) => element.id == data['id']),
@@ -126,7 +118,7 @@ class ProductProvider with ChangeNotifier {
   }
 
   Future<bool> editProduct(String id, String title, int price) async {
-    var url = 'https://api.escuelajs.co/api/v1/products/$id';
+    var url = 'http://10.0.2.2:8000/api/v1/products/$id';
 
     final productData = {
       'title': title,
@@ -150,7 +142,7 @@ class ProductProvider with ChangeNotifier {
   }
 
   Future<bool> deleteProduct(String id) async {
-    var url = 'https://api.escuelajs.co/api/v1/products/$id';
+    var url = 'http://10.0.2.2:8000/api/v1/products/$id';
 
     final response = await http.delete(Uri.parse(url));
 

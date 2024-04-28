@@ -34,6 +34,7 @@ class _AddPageState extends State<AddPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(height: 16.0),
               _buildTextField('Title', (value) {
                 setState(() {
                   title = value;
